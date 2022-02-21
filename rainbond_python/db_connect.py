@@ -17,9 +17,12 @@ logging.basicConfig(
 
 
 class DBConnect:
-    def __init__(self, db: str, collection: str, home_key='MONGODB_HOST', port_key='MONGODB_PORT'):
+    def __init__(self, db: str, collection: str, home_key='MONGODB_HOST', port_key='MONGODB_PORT', name_key='MONGODB_NAME', password_key='MONGODB_PASSWORD'):
         self.mongo_home = os.environ.get(home_key, None)
         self.mongo_port = os.environ.get(port_key, 27017)
+        # 额外的认证用户与密码
+        self.mongo_name = os.environ.get(name_key, None)
+        self.mongo_password = os.environ.get(password_key, None)
 
         if not self.mongo_home or not self.mongo_port:
             logging.error('MongoDB(组件)的组件连接信息是不完整的')
@@ -31,6 +34,12 @@ class DBConnect:
             host=self.mongo_home,
             port=int(self.mongo_port)
         )
+        # 额外的认证
+        if self.mongo_name or self.mongo_password:
+            mongo_admin_db = self.mongo_client['admin']
+            mongo_admin_db.authenticate(
+                name=self.mongo_name, password=self.mongo_password)
+        # 常规连接
         self.mongo_db = self.mongo_client[db]
         self.mongo_collection = self.mongo_db[collection]
 
@@ -126,7 +135,8 @@ class DBConnect:
             # 排除假删除数据
             find_docu = handle_db_remove(find_docu)
             # 将更新内容转化为mongo能识别的更新格式
-            modify_docu = {'$inc': modify_docu,'$set':{'update_time': datetime.today()}}
+            modify_docu = {'$inc': modify_docu, '$set': {
+                'update_time': datetime.today()}}
             if many:
                 student = self.mongo_collection.update_many(
                     find_docu, modify_docu)
@@ -302,12 +312,13 @@ class DBConnect:
                     find_dict['_id'] = ObjectId(str(filter_value))
                 elif type(filter_value) == list:
                     # 值为列表，则使用元素匹配逻辑，将数据库中对应字段包含list元素的数据全部赛选出来
-                    find_dict[filter_key] = {"$elemMatch":{"$in": filter_value}}
+                    find_dict[filter_key] = {
+                        "$elemMatch": {"$in": filter_value}}
                 else:
                     # 查询值模糊匹配的结果
                     if filter_value.strip() != '':
-                        filter_value = filter_value.replace("(","\(")
-                        filter_value = filter_value.replace(")","\)")
+                        filter_value = filter_value.replace("(", "\(")
+                        filter_value = filter_value.replace(")", "\)")
                         find_dict[filter_key] = {'$regex': filter_value}
             # 仅存在日期查询区间参数时，进行额外的创建时间区间查询
             if start_date and end_date:
