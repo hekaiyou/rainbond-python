@@ -67,6 +67,13 @@ $ set MONGODB_PORT=27017
 
 如果是 Windows 环境，打开 "高级系统设置" 里的环境变量，直接可视化编辑即可。
 
+如果 MongoDB 设置了账号密码, 还需要额外设置下面两个环境变量:
+
+```shell script
+$ set MONGODB_NAME=admin
+$ set MONGODB_PASSWORD=xxxxxx
+```
+
 ### 数据库读写
 
 作为快速开始的部分，这里只展示最简单的增删改查操作。（[源码地址](https://github.com/hekaiyou/demo_component/tree/v2)）首先，我们接着上面的组件项目，在开头添加两行代码。
