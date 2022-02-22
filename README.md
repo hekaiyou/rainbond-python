@@ -99,11 +99,13 @@ $ set MONGODB_PASSWORD=123456
     # 不会在提示没有权限了
     $ show collections;
     # 为 universal 数据库添加了一个管理用户 user1
-    $ db.createUser({ user: 'user1', pwd: '123456', roles: [ { role: "dbAdmin", db: "universal" } ] });
+    $ db.createUser({ user: 'user1', pwd: '123456', roles: [ { role: "readWrite", db: "universal" } ] });
     # 为 universal 数据库添加了一个只读用户 user2
     $ db.createUser({ user: 'user2', pwd: '123456', roles: [ { role: "read", db: "universal" } ] });
     # 退出
     $ exit
+    # 修改权限(补充)
+    $ db.updateUser('user1', { pwd: '123456', roles: [ { role: "readWrite", db: "universal" } ] });
     ```
 
 ### 数据库读写
