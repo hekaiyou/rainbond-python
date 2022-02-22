@@ -70,9 +70,41 @@ $ set MONGODB_PORT=27017
 如果 MongoDB 设置了账号密码, 还需要额外设置下面两个环境变量:
 
 ```shell script
-$ set MONGODB_NAME=admin
-$ set MONGODB_PASSWORD=xxxxxx
+$ set MONGODB_NAME=user1
+$ set MONGODB_PASSWORD=123456
 ```
+
+1. 先给容器添加 `--auth` 启动参数命令, 再进入容器内部, 执行以下代码添加管理员账号密码.
+    ```shell script
+    # 进入 admin
+    $ mongo admin 
+    # 创建用户和密码
+    $ db.createUser({ user: 'admin', pwd: '123456', roles: [ { role: "userAdminAnyDatabase", db: "admin" } ] });
+    # 验证一下对不对
+    $ db.auth("admin","123456");
+    # 退出
+    $ exit
+    # 修改密码(补充)
+    $ use admin;
+    $ db.changeUserPassword('admin','88889999')
+    ```
+2. 设置一个普通用户.
+    ```shell script
+    # 进入 admin
+    $ mongo admin 
+    # 在 admin 数据库认证成功
+    $ db.auth('admin','123456');
+    # 切换到 universal 数据库
+    $ use universal;
+    # 不会在提示没有权限了
+    $ show collections;
+    # 为 universal 数据库添加了一个管理用户 user1
+    $ db.createUser({ user: 'user1', pwd: '123456', roles: [ { role: "dbAdmin", db: "universal" } ] });
+    # 为 universal 数据库添加了一个只读用户 user2
+    $ db.createUser({ user: 'user2', pwd: '123456', roles: [ { role: "read", db: "universal" } ] });
+    # 退出
+    $ exit
+    ```
 
 ### 数据库读写
 

@@ -34,13 +34,12 @@ class DBConnect:
             host=self.mongo_home,
             port=int(self.mongo_port)
         )
-        # 额外的认证
-        if self.mongo_name or self.mongo_password:
-            mongo_admin_db = self.mongo_client['admin']
-            mongo_admin_db.authenticate(
-                name=self.mongo_name, password=self.mongo_password)
         # 常规连接
         self.mongo_db = self.mongo_client[db]
+        # 额外的认证
+        if self.mongo_name or self.mongo_password:
+            self.mongo_db.authenticate(
+                name=self.mongo_name, password=self.mongo_password)
         self.mongo_collection = self.mongo_db[collection]
 
     def write_one_docu(self, docu: dict) -> str:
