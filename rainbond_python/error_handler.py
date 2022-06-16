@@ -11,13 +11,21 @@ def error_handler(app, simple_cors: bool = True):
     def handle_400_error(error):
         return handle_abnormal(message='请求参数错误', status=400, is_raw=True)
 
+    @app.errorhandler(401)
+    def handle_401_error(error):
+        return handle_abnormal(message='未经登录授权', status=401, is_raw=True)
+
     @app.errorhandler(403)
     def handle_403_error(error):
-        return handle_abnormal(message='资源不可用', status=403, is_raw=True)
+        return handle_abnormal(message='没有资源的必要权限', status=403, is_raw=True)
 
     @app.errorhandler(404)
     def handle_404_error(error):
         return handle_abnormal(message='资源不存在', status=404, is_raw=True)
+
+    @app.errorhandler(405)
+    def handle_405_error(error):
+        return handle_abnormal(message='不允许的方法', status=405, is_raw=True)
 
     @app.errorhandler(406)
     def handle_406_error(error):
