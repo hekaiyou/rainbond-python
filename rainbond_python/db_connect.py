@@ -29,17 +29,21 @@ class DBConnect:
         else:
             logging.warning('已连接地址为 {0}:{1} 的 MongoDB(组件)'.format(
                 self.mongo_home, self.mongo_port))
-
-        self.mongo_client = pymongo.MongoClient(
-            host=self.mongo_home,
-            port=int(self.mongo_port)
-        )
-        # 常规连接
-        self.mongo_db = self.mongo_client[db]
-        # 额外的认证
         if self.mongo_name or self.mongo_password:
-            self.mongo_db.authenticate(
-                name=self.mongo_name, password=self.mongo_password)
+            # 额外的认证
+            self.mongo_client = pymongo.MongoClient(
+                host=self.mongo_home,
+                port=int(self.mongo_port),
+                username=self.mongo_name,
+                password=self.mongo_password
+            )
+        else:
+            # 常规连接
+            self.mongo_client = pymongo.MongoClient(
+                host=self.mongo_home,
+                port=int(self.mongo_port)
+            )
+        self.mongo_db = self.mongo_client[db]
         self.mongo_collection = self.mongo_db[collection]
 
     def write_one_docu(self, docu: dict) -> str:

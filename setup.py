@@ -8,7 +8,7 @@ with open('README.md', 'r', encoding='UTF-8') as fd:
 
 setuptools.setup(
     name='rainbond-python',
-    version='1.2.3',
+    version='1.3.0',
     description='Rainbond python cloud native development base library',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -18,7 +18,7 @@ setuptools.setup(
     packages=['rainbond_python'],
     include_package_data=True,
     install_requires=[
-        'pymongo==3.12.2',
+        'pymongo==4.3.3',
         'Flask',
         'pytest',
         'flask_cors',
