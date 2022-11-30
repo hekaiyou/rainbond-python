@@ -10,12 +10,17 @@ logging.basicConfig(
 
 
 class RedisConnect:
-    def __init__(self, db=0, host_key='REDIS_HOST', port_key='REDIS_PORT', decode_responses: bool = True, *args, **kwargs):
+    def __init__(self, db=0, host_key='REDIS_HOST', port_key='REDIS_PORT', password='REDIS_PASSWORD', decode_responses: bool = True, *args, **kwargs):
         self.redis_host = os.environ.get(host_key, '127.0.0.1')
         self.redis_port = os.environ.get(port_key, 6379)
+        self.redis_password = os.environ.get(password, None)
         # 创建Redis连接池
-        self.pool = redis.ConnectionPool(
-            host=self.redis_host, port=self.redis_port, decode_responses=decode_responses, *args, **kwargs)
+        if self.redis_password:
+            self.pool = redis.ConnectionPool(
+                host=self.redis_host, port=self.redis_port, decode_responses=decode_responses, password=self.redis_password, *args, **kwargs)
+        else:
+            self.pool = redis.ConnectionPool(
+                host=self.redis_host, port=self.redis_port, decode_responses=decode_responses, *args, **kwargs)
 
     def connect(self):
         try:
