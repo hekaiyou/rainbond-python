@@ -303,7 +303,7 @@ class DBConnect:
             end_date = handle_date(date=param['$end_date'], date_type='end')
             # 查找假删除数据的数据量
             remove_count = self.mongo_collection.find(
-                {'remove_time': {'$exists': True}}).count()
+                {'remove_time': {'$exists': True}}).count_documents()
             # 查找字典和排序列表，处理假删除数据
             find_dict = handle_db_remove({})
             redundant_filter = param['redundant_dict']  # 额外的数据库筛选字典
@@ -335,7 +335,7 @@ class DBConnect:
                 find_data = self.mongo_collection.find(find_dict).limit(
                     limit).skip(offset)
             # 处理返回数据
-            records_filtered = find_data.count()
+            records_filtered = find_data.count_documents()
             # 判断数据是否为空
             if records_filtered:
                 # 处理返回数据
