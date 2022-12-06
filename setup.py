@@ -8,7 +8,7 @@ with open('README.md', 'r', encoding='UTF-8') as fd:
 
 setuptools.setup(
     name='rainbond-python',
-    version='1.3.2',
+    version='1.3.5',
     description='Rainbond python cloud native development base library',
     long_description=long_description,
     long_description_content_type='text/markdown',
