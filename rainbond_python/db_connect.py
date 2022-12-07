@@ -336,7 +336,7 @@ class DBConnect:
                     limit).skip(offset)
             # 处理返回数据
             query_result = handle_db_to_list(find_data)
-            records_filtered = len(query_result)
+            records_filtered = self.mongo_collection.count_documents(find_dict)
             # 判断数据是否为空
             if records_filtered:
                 return {
